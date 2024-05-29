@@ -1,6 +1,34 @@
 <launch>
-  <include file="$(find my_mapping_package)/launch/pointcloud_to_laserscan.launch"/>
-  <include file="$(find my_mapping_package)/launch/slam_toolbox.launch"/>
-  <include file="$(find my_mapping_package)/launch/rviz.launch"/>
+  <!-- Conversione PointCloud2 a LaserScan -->
+  <node pkg="nodelet" type="nodelet" name="pointcloud_to_laserscan" args="load pointcloud_to_laserscan/pointcloud_to_laserscan_nodelet pointcloud_to_laserscan_manager">
+    <param name="min_height" value="0.1"/>
+    <param name="max_height" value="1.0"/>
+    <param name="angle_min" value="-1.5708"/>
+    <param name="angle_max" value="1.5708"/>
+    <param name="range_min" value="0.45"/>
+    <param name="range_max" value="10.0"/>
+    <param name="scan_time" value="0.033"/>
+    <param name="use_inf" value="true"/>
+    <param name="input_point_cloud2_topic" value="/ugv/rslidar_points"/>
+    <param name="output" value="screen"/>
+  </node>
+
+  <!-- SLAM Tool -->
+  <node name="slam_toolbox" pkg="slam_toolbox" type="sync_slam_toolbox_node" output="screen">
+    <param name="use_sim_time" value="true"/>
+    <param name="base_frame" value="base_link"/>
+    <param name="odom_frame" value="odom"/>
+    <param name="map_frame" value="map"/>
+    <param name="scan_topic" value="/scan"/>
+    <param name="mode" value="mapping"/>
+    <param name="robot_length" value="0.5"/> <!-- Lunghezza del robot -->
+    <param name="robot_width" value="0.3"/> <!-- Larghezza del robot -->
+    <param name="robot_height" value="0.2"/> <!-- Altezza del robot -->
+  </node>
+
+  <!-- RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find my_mapping_package)/rviz/my_config.rviz" output="screen"/>
+
+  <!-- Riproduzione del Bag File -->
   <node pkg="rosbag" type="play" name="rosbag_play" args="--clock /path/to/your.bag"/>
 </launch>
