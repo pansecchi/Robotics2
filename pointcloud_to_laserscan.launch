@@ -1,0 +1,14 @@
+<launch>
+  <node pkg="nodelet" type="nodelet" name="pointcloud_to_laserscan" args="load pointcloud_to_laserscan/pointcloud_to_laserscan_nodelet pointcloud_to_laserscan_manager">
+    <param name="min_height" value="0.1"/>
+    <param name="max_height" value="1.0"/>
+    <param name="angle_min" value="-1.5708"/>
+    <param name="angle_max" value="1.5708"/>
+    <param name="range_min" value="0.45"/>
+    <param name="range_max" value="10.0"/>
+    <param name="scan_time" value="0.033"/>
+    <param name="use_inf" value="true"/>
+    <param name="input_point_cloud2_topic" value="/ugv/rslidar_points"/>
+    <param name="output" value="screen"/>
+  </node>
+</launch>
