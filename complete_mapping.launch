@@ -1,16 +1,24 @@
 <launch>
-  <!-- Conversione PointCloud2 a LaserScan -->
-  <node pkg="nodelet" type="nodelet" name="pointcloud_to_laserscan" args="load pointcloud_to_laserscan/pointcloud_to_laserscan_nodelet pointcloud_to_laserscan_manager">
+  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan" output="screen">
+    <!-- Input PointCloud2 topic -->
+    <param name="cloud_topic" value="/ugv/rslidar_points"/>
+    
+    <!-- Output LaserScan topic -->
+    <param name="scan_topic" value="/scan"/>
+    
+    <!-- Frame ID for the output LaserScan message -->
+    <param name="target_frame" value="base_link"/>
+    
+    <!-- Parameters for the LaserScan conversion -->
     <param name="min_height" value="0.1"/>
     <param name="max_height" value="1.0"/>
-    <param name="angle_min" value="-1.5708"/>
-    <param name="angle_max" value="1.5708"/>
-    <param name="range_min" value="0.45"/>
-    <param name="range_max" value="10.0"/>
-    <param name="scan_time" value="0.033"/>
+    <param name="angle_min" value="-1.57"/>
+    <param name="angle_max" value="1.57"/>
+    <param name="angle_increment" value="0.01"/>
+    <param name="scan_time" value="0.1"/>
+    <param name="range_min" value="0.5"/>
+    <param name="range_max" value="30.0"/>
     <param name="use_inf" value="true"/>
-    <param name="input_point_cloud2_topic" value="/ugv/rslidar_points"/>
-    <param name="output" value="screen"/>
   </node>
 
    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
