@@ -50,8 +50,8 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 0 base_link rslidar"/>
 
 
-    <!-- Launch RViz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find second_project)/config/rviz_config.rviz" output="screen" />
+  <!-- Launch RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find second_project)/config/rviz_config.rviz" output="screen" />
 
 
 
