@@ -1,0 +1,19 @@
+<launch>
+  <!-- Load the map -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find my_robot_navigation)/maps/map.yaml" />
+
+  <!-- Start AMCL -->
+  <node name="amcl" pkg="amcl" type="amcl" output="screen">
+    <param name="use_map_topic" value="true" />
+    <rosparam file="$(find my_robot_navigation)/param/amcl_params.yaml" command="load" />
+  </node>
+
+  <!-- Launch move_base -->
+  <include file="$(find my_robot_navigation)/launch/move_base.launch" />
+
+  <node name="move_base" pkg="move_base" type="move_base" output="screen">
+    <rosparam file="$(find my_robot_navigation)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find my_robot_navigation)/param/global_costmap_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find my_robot_navigation)/param/local_costmap_params.yaml" command="load" ns="local_costmap" />
+  </node>
+</launch>
