@@ -1,0 +1,28 @@
+<launch>
+    <!-- Avvia Stage con il robot e la mappa -->
+    <node name="stage" pkg="stage_ros" type="stageros" args="../maps/stage/maze.world"/>
+
+    <!-- Avvia il nodo map_server per fornire la mappa -->
+    <node name="map_server" pkg="map_server" type="map_server" args="../maps/map.yaml"/>
+
+    <!-- Avvia AMCL per la localizzazione -->
+    <include file="amcl.launch.xml"/>
+
+    <!-- Avvia move_base -->
+    <node pkg="move_base" type="move_base" name="move_base" output="screen">
+        <rosparam file="../cfg/costmap_common_params.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="../cfg/costmap_common_params.yaml" command="load" ns="local_costmap"/>
+        <rosparam file="../cfg/local_costmap_params.yaml" command="load" ns="local_costmap"/>
+        <rosparam file="../cfg/global_costmap_params.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="../cfg/dwa_local_planner_params.yaml" command="load"/>
+        <rosparam file="../cfg/move_base_params.yaml" command="load"/>
+    </node>
+
+    <!-- Avvia il nodo che legge i goal dal CSV -->
+    <node name="goal_publisher" pkg="nav2_conf" type="goal_publisher_node" output="screen">
+        <param name="csv_file" value="../src/goals.csv"/>
+    </node>
+
+    <!-- Avvia RViz con la configurazione specificata -->
+    <node name="rviz" pkg="rviz" type="rviz" args="../rviz/robot_navigation.rviz"/>
+</launch>
