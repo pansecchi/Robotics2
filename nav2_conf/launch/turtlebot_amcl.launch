@@ -1,11 +1,11 @@
 <launch>
-  <arg name="base"       default="burger"/>
-  <arg name="map_file"       default="$(find nav2d_conf)/maps/map.yaml"/> 
-  <arg name="world_file"     default="$(find nav2d_conf)/maps/stage/maze.world"/>
+  <arg name="base" default="burger"/>
+  <arg name="map_file" default="$(find second_project)/maps/map.yaml"/> 
+  <arg name="world_file" default="$(find second_project)/maps/stage/maze.world"/>
   <arg name="initial_pose_x" default="-5.0"/>
   <arg name="initial_pose_y" default="1.0"/>
   <arg name="initial_pose_a" default="0.0"/>
-  <arg name="odom_frame_id"   default="odom"/>
+  <arg name="odom_frame_id" default="odom"/>
   <arg name="global_frame_id" default="map"/>
   <param name="/use_sim_time" value="true"/>
 
@@ -25,12 +25,12 @@
 
   <!-- Navigation -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <rosparam file="$(find nav2d_conf)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find nav2d_conf)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />   
-    <rosparam file="$(find nav2d_conf)/cfg/local_costmap_params.yaml" command="load" />   
-    <rosparam file="$(find nav2d_conf)/cfg/global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find nav2d_conf)/cfg/dwa_local_planner_params.yaml" command="load" />
-    <rosparam file="$(find nav2d_conf)/cfg/move_base_params.yaml" command="load" /> 
+    <rosparam file="$(find second_project)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find second_project)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />   
+    <rosparam file="$(find second_project)/cfg/local_costmap_params.yaml" command="load" />   
+    <rosparam file="$(find second_project)/cfg/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find second_project)/cfg/dwa_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find second_project)/cfg/move_base_params.yaml" command="load" /> 
     <param name="base_global_planner" value="navfn/NavfnROS" />
     <param name="planner_frequency" value="1.0" />
     <param name="planner_patience" value="5.0" />
@@ -46,7 +46,7 @@
   </node>
 
   <!-- amcl -->
-  <include file="$(find nav2d_conf)/launch/amcl.launch.xml">
+  <include file="$(find second_project)/launch/amcl.launch.xml">
     <arg name="scan_topic" value="scan"/>
     <arg name="use_map_topic" value="true"/>
     <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
@@ -55,9 +55,10 @@
   </include>
 
   <!-- Visualisation -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nav2d_conf)/rviz/robot_navigation.rviz"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find second_project)/rviz/robot_navigation.rviz"/>
 
   <!-- Avvia il nodo che legge i goal dal CSV -->
-  <node name="goal_publisher_node" pkg="nav2d_conf" type="goal_publisher_node" output="screen">
+  <node name="goal_publisher_node" pkg="second_project" type="goal_publisher_node" output="screen">
+    <param name="csv_file" value="$(find second_project)/src/waypoints.csv"/>
   </node>
 </launch>
