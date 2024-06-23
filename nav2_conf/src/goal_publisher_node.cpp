@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
 #include <move_base_msgs/MoveBaseAction.h>
-#include <tf/tf.h> // Include this header for tf::createQuaternionMsgFromYaw
+#include <tf/tf.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -21,6 +21,11 @@ std::vector<Goal> readGoalsFromCSV(const std::string& filename) {
     std::vector<Goal> goals;
     std::ifstream file(filename);
     std::string line;
+
+    if (!file.is_open()) {
+        ROS_ERROR("Failed to open file: %s", filename.c_str());
+        return goals;
+    }
 
     while (std::getline(file, line)) {
         std::stringstream lineStream(line);
@@ -54,16 +59,23 @@ void sendGoal(MoveBaseClient& ac, const Goal& goal) {
 }
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "goal_publisher");
+    ros::init(argc, argv, "goal_publisher_node");
     ros::NodeHandle nh;
 
-    if (argc != 2) {
-        ROS_ERROR("Usage: goal_publisher_node <csv_file>");
+    // Get the CSV file parameter from the parameter server
+    std::string filename;
+    if (!nh.getParam("csv_file", filename)) {
+        ROS_ERROR("Failed to get param 'csv_file'");
         return 1;
     }
 
-    std::string filename = argv[1];
+    ROS_INFO("Reading goals from file: %s", filename.c_str());
     std::vector<Goal> goals = readGoalsFromCSV(filename);
+
+    if (goals.empty()) {
+        ROS_ERROR("No goals found in the file.");
+        return 1;
+    }
 
     MoveBaseClient ac("move_base", true);
 
